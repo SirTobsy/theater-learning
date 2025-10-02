@@ -7,6 +7,7 @@ This is a prototype for a theater script learning app based on react native
 ## Prerequisites
 - node 24.8.0
 - npm 11.6.0
+- [JDK 21](https://www.oracle.com/de/java/technologies/downloads/#java21)
 
 ## Android CLI Tools
 Download the Android CLI tools from [here](https://developer.android.com/studio#command-line-tools-only)
@@ -28,6 +29,11 @@ avdmanager create avd --name MyAwesomeAVD --package "system-images;android-34;go
 ```bash
 emulator -avd MyAwesomeAVD
 ```
+if the screen is not responsive run it with the `-wipe-data` flag or as cold boot with the `-no-snapshot-load` flag
+```bash
+emulator -avd MyAwesomeAVD -wipe-data
+emulator -avd MyAwesomeAVD -no-snapshot-load
+```
 
 
 ## What technologies are used for this project?
@@ -48,4 +54,6 @@ Run `npm install`
 Add platforms: `npx cap add ios` and/or `npx cap add android`
 Build: `npm run build`
 Sync: `npx cap sync`
+
+Tip: Run the Emulator first
 Run: `npx cap run android` or `npx cap run ios`
