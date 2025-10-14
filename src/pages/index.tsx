@@ -4,7 +4,7 @@ import { ScriptDisplay } from '@/components/ScriptDisplay';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { CharacterConfig } from '@/components/CharacterConfig';
 import { sampleScript, sampleCharacters } from '@/data/sampleScript';
-import { Character, ScriptLine, TTSSettings } from '@/services/ttsService';
+import { Character, ScriptLine, TTSSettings } from '@/tts/TtsService.ts';
 
 const Index = () => {
     const [currentView, setCurrentView] = useState<ViewType>('script');
@@ -51,7 +51,7 @@ const Index = () => {
     return (
         <div className="min-h-screen bg-gradient-bg">
             <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-                <div className="max-w-6xl mx-auto px-6 py-4">
+                <div className="max-w-6xl mx-auto px-2 py-4">
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-theatrical font-bold text-accent">
@@ -65,7 +65,7 @@ const Index = () => {
                 </div>
             </header>
 
-            <main className="max-w-6xl mx-auto px-6 py-6">
+            <main className="max-w-6xl mx-auto px-4 py-6">
                 <Navigation
                     currentView={currentView}
                     onViewChange={setCurrentView}

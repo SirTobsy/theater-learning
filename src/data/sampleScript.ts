@@ -1,4 +1,4 @@
-import { ScriptLine } from '@/services/ttsService';
+import { ScriptLine } from '@/tts/TtsService.ts';
 
 export const sampleScript: ScriptLine[] = [
     {

@@ -1,4 +1,5 @@
-import { pipeline } from '@huggingface/transformers';
+import {TtsAudioModel} from "@/tts/ttsAudioModel.ts";
+import {XenovaAudioModel} from "@/tts/XenovaAudioModel.ts";
 
 export interface TTSSettings {
     readOwnLines: boolean;
@@ -23,29 +24,25 @@ export interface ScriptLine {
     isUserLine?: boolean;
 }
 
-class TTSService {
-    private speechSynthesis: SpeechSynthesis;
+class TtsService {
+    private ttsAudioModel: TtsAudioModel;
     private isInitialized = false;
-    private currentUtterance: SpeechSynthesisUtterance | null = null;
     private audioContext: AudioContext | null = null;
 
-    constructor() {
-        this.speechSynthesis = window.speechSynthesis;
+    constructor(ttsAudioModel: TtsAudioModel) {
+        this.ttsAudioModel = ttsAudioModel;
     }
 
     async initialize(): Promise<void> {
         if (this.isInitialized) return;
 
         try {
+            console.log('load model')
+            await this.ttsAudioModel.load();
+
+            console.log('init beeps')
             // Initialize Audio Context for beeps
             this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-
-            // Wait for voices to load
-            if (this.speechSynthesis.getVoices().length === 0) {
-                await new Promise<void>((resolve) => {
-                    this.speechSynthesis.addEventListener('voiceschanged', () => resolve(), { once: true });
-                });
-            }
 
             this.isInitialized = true;
             console.log('TTS Service initialized successfully');
@@ -64,32 +61,11 @@ class TTSService {
             // Stop any currently playing speech
             this.stop();
 
-            // Create new utterance
-            this.currentUtterance = new SpeechSynthesisUtterance(text);
-
-            // Apply settings
-            this.currentUtterance.rate = settings.playbackSpeed;
-            this.currentUtterance.volume = settings.volume;
-
             // Set voice (use default for now)
-            const voices = this.speechSynthesis.getVoices();
-            if (voices.length > 0) {
-                this.currentUtterance.voice = voices[0];
-            }
-
-            // Set up event listeners
-            this.currentUtterance.onend = () => {
-                this.currentUtterance = null;
-                resolve();
-            };
-
-            this.currentUtterance.onerror = (event) => {
-                this.currentUtterance = null;
-                reject(new Error(`Speech synthesis error: ${event.error}`));
-            };
+            //const voices = this.ttsAudioModel.getVoices();
 
             // Start speaking
-            this.speechSynthesis.speak(this.currentUtterance);
+            this.ttsAudioModel.speak(text, settings);
         });
     }
 
@@ -111,26 +87,21 @@ class TTSService {
     }
 
     stop(): void {
-        if (this.currentUtterance) {
-            this.speechSynthesis.cancel();
-            this.currentUtterance = null;
+        if (this.ttsAudioModel.isPlaying()) {
+            this.ttsAudioModel.stop();
         }
     }
 
     pause(): void {
-        if (this.speechSynthesis.speaking) {
-            this.speechSynthesis.pause();
+        if (this.ttsAudioModel.isPlaying()) {
+            this.ttsAudioModel.pause();
         }
     }
 
     resume(): void {
-        if (this.speechSynthesis.paused) {
-            this.speechSynthesis.resume();
+        if (this.ttsAudioModel.isPaused()) {
+            this.ttsAudioModel.resume();
         }
-    }
-
-    isPlaying(): boolean {
-        return this.speechSynthesis.speaking;
     }
 
     async processScript(
@@ -140,9 +111,12 @@ class TTSService {
         onLineStart?: (lineId: string) => void,
         onLineComplete?: (lineId: string) => void
     ): Promise<void> {
+        console.log('processing script')
+
         for (const line of lines) {
             if (line.type !== 'dialogue') continue;
 
+            console.log('process line: ',line.text)
             const character = characters.find(c => c.id === line.characterId);
             const isUserLine = character?.isUserCharacter || line.isUserLine;
 
@@ -157,17 +131,19 @@ class TTSService {
                 if (!settings.readOwnLines) {
                     // Wait for user input or continue automatically after pause
                     await new Promise(resolve => {
-                        const handleKeyPress = (event: KeyboardEvent) => {
-                            if (event.code === 'Space' || event.code === 'Enter') {
-                                document.removeEventListener('keydown', handleKeyPress);
-                                resolve(undefined);
-                            }
-                        };
-                        document.addEventListener('keydown', handleKeyPress);
+
+                        //TODO change input to continue
+                        // const handleKeyPress = (event: KeyboardEvent) => {
+                        //     if (event.code === 'Space' || event.code === 'Enter') {
+                        //         document.removeEventListener('keydown', handleKeyPress);
+                        //         resolve(undefined);
+                        //     }
+                        // };
+                        // document.addEventListener('keydown', handleKeyPress);
 
                         // Auto-continue after pause duration
                         setTimeout(() => {
-                            document.removeEventListener('keydown', handleKeyPress);
+                            //document.removeEventListener('keydown', handleKeyPress);
                             resolve(undefined);
                         }, settings.pauseDuration * 1000);
                     });
@@ -177,6 +153,7 @@ class TTSService {
                 }
             } else {
                 // Read other character's line
+                console.log('speak npc line')
                 await this.speak(line.text, settings);
             }
 
@@ -189,4 +166,4 @@ class TTSService {
     }
 }
 
-export const ttsService = new TTSService();
+export const ttsService = new TtsService(new XenovaAudioModel());

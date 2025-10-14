@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Play, Pause, Square, SkipForward } from 'lucide-react';
-import { ScriptLine, Character, TTSSettings, ttsService } from '@/services/ttsService';
+import { ScriptLine, Character, TTSSettings, ttsService } from '@/tts/TtsService.ts';
 import { useToast } from '@/hooks/use-toast';
 
 interface ScriptDisplayProps {
@@ -149,7 +149,7 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-6">
+        <div className="w-full max-w-4xl mx-auto p-2">
             {/* Controls */}
             <Card className="mb-6 p-4 bg-card border-border">
                 <div className="flex items-center justify-between">

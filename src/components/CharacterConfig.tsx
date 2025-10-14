@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { User, Users, Play } from 'lucide-react';
-import { Character, ScriptLine, ttsService } from '@/services/ttsService';
+import { Character, ScriptLine, ttsService } from '@/tts/TtsService.ts';
 import { useToast } from '@/hooks/use-toast';
 
 interface CharacterConfigProps {

@@ -47,7 +47,7 @@ This project is built with:
 - Tailwind CSS
 
 
-To deploy to mobile devices:
+# To deploy to mobile devices (Preview):
 
 Export to GitHub and git pull locally
 Run `npm install`
@@ -57,3 +57,8 @@ Sync: `npx cap sync`
 
 Tip: Run the Emulator first
 Run: `npx cap run android` or `npx cap run ios`
+
+# To show in browser (preview):
+```
+vite preview
+```
