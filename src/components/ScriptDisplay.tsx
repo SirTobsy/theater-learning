@@ -42,7 +42,7 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
         }
     };
 
-    const handlePlay = async () => {
+    const handlePlay = async (): Promise<void> => {
         if (!isInitialized) {
             toast({
                 title: "Not Ready",
@@ -52,6 +52,7 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
             return;
         }
 
+        console.warn("Is this appearing?")
         console.log("Start Playing script");
         try {
             setIsPlaying(true);
@@ -60,10 +61,8 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
                 characters,
                 settings,
                 (lineId) => setCurrentLineId(lineId),
-                (lineId) => {
-                    if (lineId === currentLineId) {
-                        setCurrentLineId(null);
-                    }
+                () => {
+                    setCurrentLineId(null);
                 }
             );
             setIsPlaying(false);

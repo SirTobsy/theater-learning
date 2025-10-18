@@ -58,7 +58,9 @@ class TtsService {
         }
 
         // Stop any currently playing speech
-        await this.stop();
+        if (this.ttsAudioModel.isPlaying()) {
+            await this.ttsAudioModel.stop();
+        }
 
         // Set voice (use default for now)
         //const voices = await this.ttsAudioModel.getVoices();
@@ -147,4 +149,4 @@ class TtsService {
     }
 }
 
-export const ttsService = new TtsService(new XenovaAudioModel());
+export const ttsService = new TtsService(new XenovaAudioModel(new window.AudioContext()));
