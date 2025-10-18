@@ -7,10 +7,10 @@ export interface TtsAudioModel {
     isPaused(): boolean;
     load(): Promise<void>;
     speak(text: string, settings: TTSSettings, voice?: Voice): Promise<void>;
-    pause(): void;
-    resume(): void;
-    stop(): void;
-    getVoices(): Voice[];
-    getVoice(name: string): Voice;
-    getSupportedLanguages(): string[];
+    pause(): Promise<void>;
+    resume(): Promise<void>;
+    stop(): Promise<void>;
+    getVoices(): Promise<Voice[]>;
+    getVoice(name: string): Promise<Voice>;
+    getSupportedLanguages(): Promise<string[]>;
 }

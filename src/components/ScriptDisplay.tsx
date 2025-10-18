@@ -52,6 +52,7 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
             return;
         }
 
+        console.log("Start Playing script");
         try {
             setIsPlaying(true);
             await ttsService.processScript(
@@ -68,13 +69,15 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
             setIsPlaying(false);
             setCurrentLineId(null);
         } catch (error) {
-            setIsPlaying(false);
-            setCurrentLineId(null);
+            console.error("Error playing script:", error);
             toast({
                 title: "Playback Error",
                 description: "Failed to play script",
                 variant: "destructive",
             });
+        } finally {
+            setIsPlaying(false);
+            setCurrentLineId(null);
         }
     };
 

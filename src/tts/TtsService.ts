@@ -57,16 +57,14 @@ class TtsService {
             throw new Error('TTS Service not initialized');
         }
 
-        return new Promise((resolve, reject) => {
-            // Stop any currently playing speech
-            this.stop();
+        // Stop any currently playing speech
+        await this.stop();
 
-            // Set voice (use default for now)
-            //const voices = this.ttsAudioModel.getVoices();
+        // Set voice (use default for now)
+        //const voices = await this.ttsAudioModel.getVoices();
 
-            // Start speaking
-            this.ttsAudioModel.speak(text, settings);
-        });
+        // Start speaking
+        await this.ttsAudioModel.speak(text, settings);
     }
 
     async playBeep(): Promise<void> {
@@ -86,21 +84,21 @@ class TtsService {
         oscillator.stop(this.audioContext.currentTime + 0.3);
     }
 
-    stop(): void {
+    async stop(): Promise<void> {
         if (this.ttsAudioModel.isPlaying()) {
-            this.ttsAudioModel.stop();
+            await this.ttsAudioModel.stop();
         }
     }
 
-    pause(): void {
+    async pause(): Promise<void> {
         if (this.ttsAudioModel.isPlaying()) {
-            this.ttsAudioModel.pause();
+            await this.ttsAudioModel.pause();
         }
     }
 
-    resume(): void {
+    async resume(): Promise<void> {
         if (this.ttsAudioModel.isPaused()) {
-            this.ttsAudioModel.resume();
+            await this.ttsAudioModel.resume();
         }
     }
 
@@ -129,36 +127,19 @@ class TtsService {
                 }
 
                 if (!settings.readOwnLines) {
-                    // Wait for user input or continue automatically after pause
-                    await new Promise(resolve => {
-
-                        //TODO change input to continue
-                        // const handleKeyPress = (event: KeyboardEvent) => {
-                        //     if (event.code === 'Space' || event.code === 'Enter') {
-                        //         document.removeEventListener('keydown', handleKeyPress);
-                        //         resolve(undefined);
-                        //     }
-                        // };
-                        // document.addEventListener('keydown', handleKeyPress);
-
-                        // Auto-continue after pause duration
-                        setTimeout(() => {
-                            //document.removeEventListener('keydown', handleKeyPress);
-                            resolve(undefined);
-                        }, settings.pauseDuration * 1000);
-                    });
+                    // do nothing
                 } else {
                     // Read user's line
                     await this.speak(line.text, settings);
                 }
             } else {
-                // Read other character's line
+                // Read another character's line
                 console.log('speak npc line')
                 await this.speak(line.text, settings);
             }
 
             // Pause between lines
-            await new Promise(resolve => setTimeout(resolve, settings.pauseDuration * 1000));
+            // await new Promise(resolve => setTimeout(resolve, settings.pauseDuration * 1000));
 
             // Notify line complete
             onLineComplete?.(line.id);
