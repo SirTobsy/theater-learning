@@ -1,5 +1,5 @@
 import {TtsAudioModel} from "@/tts/ttsAudioModel.ts";
-import {XenovaAudioModel} from "@/tts/XenovaAudioModel.ts";
+import {KokoroAudioModel} from "@/tts/KokoroAudioModel.ts";
 
 export interface TTSSettings {
     readOwnLines: boolean;
@@ -61,6 +61,8 @@ class TtsService {
         if (this.ttsAudioModel.isPlaying()) {
             await this.ttsAudioModel.stop();
         }
+
+        console.log("Speaking")
 
         // Set voice (use default for now)
         //const voices = await this.ttsAudioModel.getVoices();
@@ -149,4 +151,4 @@ class TtsService {
     }
 }
 
-export const ttsService = new TtsService(new XenovaAudioModel(new window.AudioContext()));
+export const ttsService = new TtsService(new KokoroAudioModel(new window.AudioContext()));
