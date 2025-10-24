@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Play, Pause, Square, SkipForward } from 'lucide-react';
+import { Play, Pause, Square } from 'lucide-react';
 import { ScriptLine, Character, TTSSettings, ttsService } from '@/tts/TtsService.ts';
 import { useToast } from '@/hooks/use-toast';
 

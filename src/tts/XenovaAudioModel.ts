@@ -1,10 +1,8 @@
 import {TtsAudioModel} from "@/tts/ttsAudioModel.ts";
-import {Voice} from "@/tts/Voice.ts";
-import {TTSSettings} from "@/tts/TtsService.ts";
-import {pipeline, TextToAudioPipeline} from "@huggingface/transformers";
+import {pipeline} from "@huggingface/transformers";
 
 export class XenovaAudioModel implements TtsAudioModel {
-    private synthesizer= null; //TODO type
+    private synthesizer= null;
 
     async load(): Promise<void> {
         if (this.synthesizer) {

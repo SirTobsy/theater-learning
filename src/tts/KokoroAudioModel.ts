@@ -1,6 +1,4 @@
 import {TtsAudioModel} from "@/tts/ttsAudioModel.ts";
-import {Voice} from "@/tts/Voice.ts";
-import {TTSSettings} from "@/tts/TtsService.ts";
 import {KokoroTTS} from "kokoro-js";
 
 export class KokoroAudioModel implements TtsAudioModel {
