@@ -1,5 +1,4 @@
-import {TtsAudioModel} from "@/tts/ttsAudioModel.ts";
-import {KokoroAudioModel} from "@/tts/KokoroAudioModel.ts";
+import {TtsWorkerMessenger} from "@/tts/TtsWorkerMessenger.tsx";
 
 export interface TTSSettings {
     readOwnLines: boolean;
@@ -25,12 +24,13 @@ export interface ScriptLine {
 }
 
 class TtsService {
-    private ttsAudioModel: TtsAudioModel;
     private isInitialized = false;
     private audioContext: AudioContext | null = null;
+    private currentSource: AudioBufferSourceNode | null = null;
+    private ttsWorkerMessanger: TtsWorkerMessenger;
 
-    constructor(ttsAudioModel: TtsAudioModel) {
-        this.ttsAudioModel = ttsAudioModel;
+    constructor(ttsWorker: TtsWorkerMessenger) {
+        this.ttsWorkerMessanger = ttsWorker;
     }
 
     async initialize(): Promise<void> {
@@ -38,37 +38,12 @@ class TtsService {
 
         try {
             console.log('load model')
-            await this.ttsAudioModel.load();
-
-            console.log('init beeps')
-            // Initialize Audio Context for beeps
             this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-
-            this.isInitialized = true;
-            console.log('TTS Service initialized successfully');
+            this.isInitialized = await this.ttsWorkerMessanger.load();
         } catch (error) {
             console.error('Failed to initialize TTS Service:', error);
             throw new Error('TTS initialization failed');
         }
-    }
-
-    async speak(text: string, settings: TTSSettings): Promise<void> {
-        if (!this.isInitialized) {
-            throw new Error('TTS Service not initialized');
-        }
-
-        // Stop any currently playing speech
-        if (this.ttsAudioModel.isPlaying()) {
-            await this.ttsAudioModel.stop();
-        }
-
-        console.log("Speaking")
-
-        // Set voice (use default for now)
-        //const voices = await this.ttsAudioModel.getVoices();
-
-        // Start speaking
-        await this.ttsAudioModel.speak(text, settings);
     }
 
     async playBeep(): Promise<void> {
@@ -89,21 +64,52 @@ class TtsService {
     }
 
     async stop(): Promise<void> {
-        if (this.ttsAudioModel.isPlaying()) {
-            await this.ttsAudioModel.stop();
-        }
+        // TODO
     }
 
     async pause(): Promise<void> {
-        if (this.ttsAudioModel.isPlaying()) {
-            await this.ttsAudioModel.pause();
-        }
+        // TODO
     }
 
     async resume(): Promise<void> {
-        if (this.ttsAudioModel.isPaused()) {
-            await this.ttsAudioModel.resume();
-        }
+        // TODO
+    }
+
+    async playAudio(audioData: Float32Array, samplingRate: number): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                // 2. Create an AudioBuffer
+                const audioBuffer = this.audioContext.createBuffer(
+                    1, // number of channels (1 for mono)
+                    audioData.length, // buffer length
+                    samplingRate // sampling rate
+                );
+
+                // 3. Copy your audio data into the AudioBuffer
+                audioBuffer.getChannelData(0).set(audioData);
+
+                // 4. Create a source node
+                const source = this.audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                this.currentSource = source;
+
+                // 5. Connect the source to the destination (speakers) and play
+                source.connect(this.audioContext.destination);
+
+                // 6. Resolve the promise when the audio is finished playing
+                source.onended = () => {
+                    console.log('Audio finished playing');
+                    this.currentSource = null;
+                    resolve();
+                }
+
+                source.start();
+            } catch (error) {
+                this.currentSource = null;
+                this.stop()
+                reject(error);
+            }
+        })
     }
 
     async processScript(
@@ -113,8 +119,6 @@ class TtsService {
         onLineStart?: (lineId: string) => void,
         onLineComplete?: (lineId: string) => void
     ): Promise<void> {
-        console.log('processing script')
-
         for (const line of lines) {
             if (line.type !== 'dialogue') continue;
 
@@ -130,16 +134,16 @@ class TtsService {
                     await this.playBeep();
                 }
 
-                if (!settings.readOwnLines) {
-                    // do nothing
-                } else {
+                if (settings.readOwnLines) {
                     // Read user's line
-                    await this.speak(line.text, settings);
+                    const out = await this.ttsWorkerMessanger.generate(line.text);
+                    await this.playAudio(out.audio, out.sampling_rate);
                 }
             } else {
                 // Read another character's line
                 console.log('speak npc line')
-                await this.speak(line.text, settings);
+                const out = await this.ttsWorkerMessanger.generate(line.text);
+                await this.playAudio(out.audio, out.sampling_rate);
             }
 
             // Pause between lines
@@ -151,4 +155,4 @@ class TtsService {
     }
 }
 
-export const ttsService = new TtsService(new KokoroAudioModel(new window.AudioContext()));
+export const ttsService = new TtsService(new TtsWorkerMessenger());
