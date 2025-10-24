@@ -1,4 +1,4 @@
-import {TtsWorkerMessenger} from "@/tts/TtsWorkerMessenger.tsx";
+import {TtsWorkerMessenger} from "@/tts/TtsWorkerMessenger.ts";
 
 export interface TTSSettings {
     readOwnLines: boolean;
