@@ -85,11 +85,6 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
         setIsPlaying(false);
     };
 
-    const handleResume = () => {
-        ttsService.resume();
-        setIsPlaying(true);
-    };
-
     const handleStop = () => {
         ttsService.stop();
         setIsPlaying(false);
