@@ -78,22 +78,24 @@ class TtsService {
 
                 if (settings.readOwnLines) {
                     // Read user's line
-                    const out = await this.ttsWorkerMessanger.generate(line.text);
-                    await this.audioPlayer.playAudio(out.audio, out.sampling_rate);
+                    await this.readLine(line, settings);
                 }
             } else {
                 // Read another character's line
-                console.log('speak npc line')
-                const out = await this.ttsWorkerMessanger.generate(line.text);
-                await this.audioPlayer.playAudio(out.audio, out.sampling_rate);
+                await this.readLine(line, settings);
             }
-
-            // Pause between lines
-            // await new Promise(resolve => setTimeout(resolve, settings.pauseDuration * 1000));
 
             // Notify line complete
             onLineComplete?.(line.id);
         }
+    }
+
+    async readLine(line: ScriptLine, settings: TTSSettings): Promise<void> {
+        // Read line
+        const out = await this.ttsWorkerMessanger.generate(line.text);
+        await this.audioPlayer.playAudio(out.audio, out.sampling_rate);
+        // waiting promise
+        await new Promise(resolve => setTimeout(resolve, settings.pauseDuration * 1000));
     }
 }
 

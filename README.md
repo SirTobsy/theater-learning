@@ -35,6 +35,7 @@ emulator -avd MyAwesomeAVD -wipe-data
 emulator -avd MyAwesomeAVD -no-snapshot-load
 ```
 
+To watch the console logs got to [chrome://inspect/#devices](chrome://inspect/#devices)
 
 ## What technologies are used for this project?
 

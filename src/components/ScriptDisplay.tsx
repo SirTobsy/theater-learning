@@ -52,7 +52,6 @@ export const ScriptDisplay: React.FC<ScriptDisplayProps> = ({
             return;
         }
 
-        console.warn("Is this appearing?")
         console.log("Start Playing script");
         try {
             setIsPlaying(true);

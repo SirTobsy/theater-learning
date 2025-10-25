@@ -2,7 +2,7 @@ import {TtsAudioModel} from "@/tts/ttsAudioModel.ts";
 import {pipeline} from "@huggingface/transformers";
 
 export class XenovaAudioModel implements TtsAudioModel {
-    private synthesizer= null;
+    private synthesizer = null;
 
     async load(): Promise<void> {
         if (this.synthesizer) {
@@ -10,10 +10,7 @@ export class XenovaAudioModel implements TtsAudioModel {
             return;
         }
 
-        this.synthesizer = await pipeline('text-to-speech', 'Xenova/speecht5_tts', { dtype: 'q8' });
-
-        console.log('successfully loaded')
-        return Promise.resolve(undefined);
+        this.synthesizer = await pipeline('text-to-speech', 'Xenova/speecht5_tts', {dtype: 'fp16', device: 'webgpu'});
     }
 
     async generate(text: string): Promise<void> {
@@ -24,15 +21,14 @@ export class XenovaAudioModel implements TtsAudioModel {
         try {
             console.log('Generating audio for:', text);
 
-            // create wav file
             const speaker_embeddings = 'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/speaker_embeddings.bin';
 
             // Add timeout protection
             const timeoutPromise = new Promise((_, reject) => {
-                setTimeout(() => reject(new Error('Speech synthesis timeout')), 2000);
+                setTimeout(() => reject(new Error('Speech synthesis timeout')), 90*1000);
             });
 
-            const synthesisPromise = this.synthesizer(text, { speaker_embeddings });
+            const synthesisPromise = this.synthesizer(text, {speaker_embeddings});
 
             return await Promise.race([synthesisPromise, timeoutPromise]) as any;
         } catch (error) {
