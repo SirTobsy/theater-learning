@@ -1,23 +1,25 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
+import { sveltekit } from '@sveltejs/kit/vite';
+import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vitest/config';
 
-// https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
-    server: {
-        host: "::",
-        port: 8080,
-    },
-    plugins: [react()].filter(Boolean),
-    resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "./src"),
-        },
-    },
-    worker: {
-        format: 'es',
-    },
-    optimizeDeps: {
-        exclude: ['@huggingface/transformers']
-    }
-}));
+export default defineConfig({
+	server: {
+		host: '::',
+		port: 8080
+	},
+	plugins: [tailwindcss(), sveltekit()],
+	worker: {
+		format: 'es'
+	},
+	optimizeDeps: {
+		exclude: ['@huggingface/transformers']
+	},
+	// Vitest doesn't apply Vite's client-build resolve conditions, so without this
+	// Svelte components resolve to their server-side build and `mount()` throws.
+	resolve: process.env.VITEST ? { conditions: ['browser'] } : undefined,
+	test: {
+		environment: 'jsdom',
+		setupFiles: ['./vitest-setup.ts'],
+		include: ['src/**/*.{test,spec}.{js,ts}']
+	}
+});

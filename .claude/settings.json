@@ -1,0 +1,33 @@
+{
+  "model": "sonnet-5",
+  "advisorModel": "opus-5",
+  "effortLevel": "high",
+  "outputStyle": "explanatory",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "autoCompactEnabled": true,
+  "cleanupPeriodDays": 10,
+  "defaultShell": "bash",
+  "feedbackSurveyRate": 0,
+  "permissions": {
+    "allow": [
+      "Bash(git pull *)",
+      "Bash(git status *)",
+      "Read(*)"
+    ],
+    "ask": [
+      "Bash(pnpm install *)",
+      ""
+    ],
+    "deny": [
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
+      "Bash(git merge *)",
+      "Read(./.env)"
+    ]
+  }
+}
