@@ -35,7 +35,7 @@ export class KokoroAudioModel implements TtsAudioModel {
         console.log("loaded model")
     }
 
-    async generate(text: string): Promise<void> {
+    async generate(text: string): Promise<{ audio: Float32Array; sampling_rate: number }> {
         if (!this.synthesizer) {
             throw new Error('Synthesizer not loaded. Call load() first.');
         }
@@ -44,7 +44,7 @@ export class KokoroAudioModel implements TtsAudioModel {
             console.debug('Generating audio for:', text);
 
             // Add timeout protection
-            const timeoutPromise = new Promise((_, reject) => {
+            const timeoutPromise = new Promise<never>((_, reject) => {
                 setTimeout(() => reject(new Error('Speech synthesis timeout')), 10000);
             });
 
@@ -52,8 +52,7 @@ export class KokoroAudioModel implements TtsAudioModel {
                 voice: "af_bella",
             });
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            return await Promise.race([synthesisPromise, timeoutPromise]) as any;
+            return await Promise.race([synthesisPromise, timeoutPromise]);
         } catch (error) {
             console.error('Error during speech synthesis:', error);
             throw error;
