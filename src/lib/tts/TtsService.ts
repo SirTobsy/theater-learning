@@ -26,11 +26,12 @@ export interface ScriptLine {
 
 export class TtsService {
     private isInitialized = false;
-    private ttsWorkerMessanger: TtsWorkerMessenger;
+    private ttsWorkerMessenger: TtsWorkerMessenger;
     private audioPlayer: AudioPlayer;
+    private playToken = 0;
 
     constructor(ttsWorker: TtsWorkerMessenger, audioPlayer: AudioPlayer) {
-        this.ttsWorkerMessanger = ttsWorker;
+        this.ttsWorkerMessenger = ttsWorker;
         this.audioPlayer = audioPlayer;
     }
 
@@ -39,7 +40,7 @@ export class TtsService {
 
         try {
             console.log('load model')
-            this.isInitialized = await this.ttsWorkerMessanger.load();
+            this.isInitialized = await this.ttsWorkerMessenger.load();
         } catch (error) {
             console.error('Failed to initialize TTS Service:', error);
             throw new Error('TTS initialization failed');
@@ -47,11 +48,16 @@ export class TtsService {
     }
 
     async stop(): Promise<void> {
+        this.playToken++;
         await this.audioPlayer.stop();
     }
 
     async pause(): Promise<void> {
         await this.audioPlayer.pause();
+    }
+
+    async resume(): Promise<void> {
+        await this.audioPlayer.resume();
     }
 
     async processScript(
@@ -61,7 +67,9 @@ export class TtsService {
         onLineStart?: (lineId: string) => void,
         onLineComplete?: (lineId: string) => void
     ): Promise<void> {
+        const token = ++this.playToken;
         for (const line of lines) {
+            if (token !== this.playToken) break;
             if (line.type !== 'dialogue') continue;
 
             console.log('process line: ',line.text)
@@ -78,12 +86,14 @@ export class TtsService {
 
                 if (settings.readOwnLines) {
                     // Read user's line
-                    await this.readLine(line, settings);
+                    await this.readLine(line, settings, token);
                 }
             } else {
                 // Read another character's line
-                await this.readLine(line, settings);
+                await this.readLine(line, settings, token);
             }
+
+            if (token !== this.playToken) break;
 
             // Notify line complete
             onLineComplete?.(line.id);
@@ -94,10 +104,11 @@ export class TtsService {
         await this.readLine({ id: 'preview', characterId: '', text, type: 'dialogue' }, settings);
     }
 
-    async readLine(line: ScriptLine, settings: TTSSettings): Promise<void> {
+    async readLine(line: ScriptLine, settings: TTSSettings, token?: number): Promise<void> {
         // Read line
-        const out = await this.ttsWorkerMessanger.generate(line.text);
+        const out = await this.ttsWorkerMessenger.generate(line.text);
         await this.audioPlayer.playAudio(out.audio, out.sampling_rate);
+        if (token !== undefined && token !== this.playToken) return;
         // waiting promise
         await new Promise(resolve => setTimeout(resolve, settings.pauseDuration * 1000));
     }

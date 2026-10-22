@@ -14,6 +14,7 @@
 	}: { script: ScriptLine[]; characters: Character[]; settings: TTSSettings } = $props();
 
 	let isPlaying = $state(false);
+	let isPaused = $state(false);
 	let currentLineId = $state<string | null>(null);
 	let isInitialized = $state(false);
 
@@ -46,6 +47,7 @@
 		console.log('Start Playing script');
 		try {
 			isPlaying = true;
+			isPaused = false;
 			await ttsService.processScript(
 				script,
 				characters,
@@ -55,8 +57,6 @@
 					currentLineId = null;
 				}
 			);
-			isPlaying = false;
-			currentLineId = null;
 		} catch (error) {
 			console.error('Error playing script:', error);
 			toast.error('Playback Error', {
@@ -64,18 +64,25 @@
 			});
 		} finally {
 			isPlaying = false;
+			isPaused = false;
 			currentLineId = null;
 		}
 	}
 
 	function handlePause() {
 		ttsService.pause();
-		isPlaying = false;
+		isPaused = true;
+	}
+
+	function handleResume() {
+		ttsService.resume();
+		isPaused = false;
 	}
 
 	function handleStop() {
 		ttsService.stop();
 		isPlaying = false;
+		isPaused = false;
 		currentLineId = null;
 	}
 
@@ -107,10 +114,17 @@
 					</Button>
 				{:else}
 					<div class="flex space-x-2">
-						<Button onclick={handlePause} variant="secondary">
-							<PauseIcon class="w-4 h-4 mr-2" />
-							Pause
-						</Button>
+						{#if isPaused}
+							<Button onclick={handleResume} variant="secondary">
+								<PlayIcon class="w-4 h-4 mr-2" />
+								Resume
+							</Button>
+						{:else}
+							<Button onclick={handlePause} variant="secondary">
+								<PauseIcon class="w-4 h-4 mr-2" />
+								Pause
+							</Button>
+						{/if}
 						<Button onclick={handleStop} variant="outline">
 							<SquareIcon class="w-4 h-4 mr-2" />
 							Stop

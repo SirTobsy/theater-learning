@@ -48,6 +48,9 @@ export class AudioPlayer {
     async stop(): Promise<void> {
         // play -> stop
         // paused -> stop
+        if (this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
+        }
         if (this.currentSource) {
             this.currentSource.stop();
             this.currentSource = null;
@@ -55,9 +58,11 @@ export class AudioPlayer {
     }
 
     async pause(): Promise<void> {
-        // play -> pause
-        // stopped -> pause (does not make sense)
-        // TODO how?
+        await this.audioContext.suspend();
+    }
+
+    async resume(): Promise<void> {
+        await this.audioContext.resume();
     }
 
     async beep(): Promise<void> {
