@@ -4,7 +4,7 @@
 	import PlayIcon from '@lucide/svelte/icons/play';
 	import PauseIcon from '@lucide/svelte/icons/pause';
 	import SquareIcon from '@lucide/svelte/icons/square';
-	import { ttsService, type Character, type ScriptLine, type TTSSettings } from '$lib/tts/TtsService';
+	import { ttsService, type Character, type ScriptLine, type TTSSettings } from '$lib/services/tts/TtsService';
 	import { toast } from 'svelte-sonner';
 
 	let {

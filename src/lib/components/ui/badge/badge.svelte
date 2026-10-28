@@ -24,7 +24,7 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/services/utils';
 
 	let {
 		class: className,

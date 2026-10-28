@@ -3,7 +3,7 @@
 	import { Switch } from '$lib/components/ui/switch';
 	import { Slider } from '$lib/components/ui/slider';
 	import { Label } from '$lib/components/ui/label';
-	import type { TTSSettings } from '$lib/tts/TtsService';
+	import type { TTSSettings } from '$lib/services/tts/TtsService';
 
 	let {
 		settings,

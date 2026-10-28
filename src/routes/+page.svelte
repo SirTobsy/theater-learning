@@ -4,7 +4,7 @@
 	import SettingsPanel from '$lib/components/SettingsPanel.svelte';
 	import CharacterConfig from '$lib/components/CharacterConfig.svelte';
 	import { sampleScript, sampleCharacters } from '$lib/data/sampleScript';
-	import type { Character, ScriptLine, TTSSettings } from '$lib/tts/TtsService';
+	import type { Character, ScriptLine, TTSSettings } from '$lib/services/tts/TtsService';
 
 	let currentView = $state<ViewType>('script');
 	let script = $state<ScriptLine[]>(sampleScript);

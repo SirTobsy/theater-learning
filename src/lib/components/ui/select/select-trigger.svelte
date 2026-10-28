@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Select as SelectPrimitive } from 'bits-ui';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
-	import { cn } from '$lib/utils';
+	import { cn } from '$lib/services/utils';
 	import type { Snippet } from 'svelte';
 
 	let {

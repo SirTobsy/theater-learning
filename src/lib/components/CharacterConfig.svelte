@@ -7,7 +7,7 @@
 	import UserIcon from '@lucide/svelte/icons/user';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import PlayIcon from '@lucide/svelte/icons/play';
-	import { ttsService, type Character, type ScriptLine } from '$lib/tts/TtsService';
+	import { ttsService, type Character, type ScriptLine } from '$lib/services/tts/TtsService';
 	import { toast } from 'svelte-sonner';
 
 	let {

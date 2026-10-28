@@ -1,6 +1,6 @@
 {
-  "model": "sonnet-5",
-  "advisorModel": "opus-5",
+  "model": "sonnet",
+  "advisorModel": "opus",
   "effortLevel": "high",
   "outputStyle": "explanatory",
   "attribution": {
@@ -18,8 +18,7 @@
       "Read(*)"
     ],
     "ask": [
-      "Bash(pnpm install *)",
-      ""
+      "Bash(pnpm install *)"
     ],
     "deny": [
       "Bash(git commit *)",
