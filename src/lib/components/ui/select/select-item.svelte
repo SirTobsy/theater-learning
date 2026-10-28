@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Select as SelectPrimitive } from 'bits-ui';
 	import CheckIcon from '@lucide/svelte/icons/check';
-	import { cn } from '$lib/services/utils';
+	import { cn } from '#lib/services/utils.js';
 
 	let { class: className, value, label, ...restProps }: SelectPrimitive.ItemProps = $props();
 </script>

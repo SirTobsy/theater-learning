@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Navigation, { type ViewType } from '$lib/components/Navigation.svelte';
-	import ScriptDisplay from '$lib/components/ScriptDisplay.svelte';
-	import SettingsPanel from '$lib/components/SettingsPanel.svelte';
-	import CharacterConfig from '$lib/components/CharacterConfig.svelte';
-	import { sampleScript, sampleCharacters } from '$lib/data/sampleScript';
-	import type { Character, ScriptLine, TTSSettings } from '$lib/services/tts/TtsService';
+	import Navigation, { type ViewType } from '#lib/components/Navigation.svelte';
+	import ScriptDisplay from '#lib/components/ScriptDisplay.svelte';
+	import SettingsPanel from '#lib/components/SettingsPanel.svelte';
+	import CharacterConfig from '#lib/components/CharacterConfig.svelte';
+	import { sampleScript, sampleCharacters } from '#lib/data/sampleScript.js';
+	import type { Character, ScriptLine, TTSSettings } from '#lib/services/tts/TtsService.js';
 
 	let currentView = $state<ViewType>('script');
 	let script = $state<ScriptLine[]>(sampleScript);

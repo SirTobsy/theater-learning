@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Select as SelectPrimitive } from 'bits-ui';
-	import { cn } from '$lib/services/utils';
+	import { cn } from '#lib/services/utils.js';
 	import type { Snippet } from 'svelte';
 
 	let {

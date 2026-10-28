@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Card } from '$lib/components/ui/card';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import PlayIcon from '@lucide/svelte/icons/play';
 	import PauseIcon from '@lucide/svelte/icons/pause';
 	import SquareIcon from '@lucide/svelte/icons/square';
-	import { ttsService, type Character, type ScriptLine, type TTSSettings } from '$lib/services/tts/TtsService';
+	import { ttsService, type Character, type ScriptLine, type TTSSettings } from '#lib/services/tts/TtsService.js';
 	import { toast } from 'svelte-sonner';
 
 	let {

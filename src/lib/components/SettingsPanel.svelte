@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Switch } from '$lib/components/ui/switch';
-	import { Slider } from '$lib/components/ui/slider';
-	import { Label } from '$lib/components/ui/label';
-	import type { TTSSettings } from '$lib/services/tts/TtsService';
+	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Switch } from '#lib/components/ui/switch/index.js';
+	import { Slider } from '#lib/components/ui/slider/index.js';
+	import { Label } from '#lib/components/ui/label/index.js';
+	import type { TTSSettings } from '#lib/services/tts/TtsService.js';
 
 	let {
 		settings,
