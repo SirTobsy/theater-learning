@@ -1,4 +1,4 @@
-import type { ScriptLine } from '$lib/services/tts/TtsService';
+import type { ScriptLine } from '#lib/services/tts/TtsService.js';
 
 export const sampleScript: ScriptLine[] = [
     {

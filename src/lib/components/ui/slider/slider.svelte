@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Slider as SliderPrimitive } from 'bits-ui';
-	import { cn } from '$lib/services/utils';
+	import { cn } from '#lib/services/utils.js';
 
 	let {
 		value = $bindable(0),

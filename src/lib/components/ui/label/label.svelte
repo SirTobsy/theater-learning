@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import type { HTMLLabelAttributes } from 'svelte/elements';
-	import { cn } from '$lib/services/utils';
+	import { cn } from '#lib/services/utils.js';
 
 	let {
 		class: className,

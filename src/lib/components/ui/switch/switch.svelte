@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Switch as SwitchPrimitive } from 'bits-ui';
-	import { cn } from '$lib/services/utils';
+	import { cn } from '#lib/services/utils.js';
 
 	let {
 		checked = $bindable(false),

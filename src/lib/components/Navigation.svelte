@@ -3,8 +3,8 @@
 </script>
 
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button';
-	import { Card } from '$lib/components/ui/card';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Card } from '#lib/components/ui/card/index.js';
 	import FileTextIcon from '@lucide/svelte/icons/file-text';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import SettingsIcon from '@lucide/svelte/icons/settings';

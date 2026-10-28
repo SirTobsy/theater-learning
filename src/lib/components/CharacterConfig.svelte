@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import { Button } from '$lib/components/ui/button';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-	import { Checkbox } from '$lib/components/ui/checkbox';
+	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#lib/components/ui/card/index.js';
+	import { Button } from '#lib/components/ui/button/index.js';
+	import { Badge } from '#lib/components/ui/badge/index.js';
+	import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '#lib/components/ui/select/index.js';
+	import { Checkbox } from '#lib/components/ui/checkbox/index.js';
 	import UserIcon from '@lucide/svelte/icons/user';
 	import UsersIcon from '@lucide/svelte/icons/users';
 	import PlayIcon from '@lucide/svelte/icons/play';
-	import { ttsService, type Character, type ScriptLine } from '$lib/services/tts/TtsService';
+	import { ttsService, type Character, type ScriptLine } from '#lib/services/tts/TtsService.js';
 	import { toast } from 'svelte-sonner';
 
 	let {

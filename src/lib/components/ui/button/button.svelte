@@ -40,7 +40,7 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/services/utils';
+	import { cn } from '#lib/services/utils.js';
 
 	let {
 		class: className,
