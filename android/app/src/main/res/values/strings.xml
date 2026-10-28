@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Theater Script Reader</string>
+    <string name="title_activity_main">Theater Script Reader</string>
+    <string name="package_name">com.theaterscript.app</string>
+    <string name="custom_url_scheme">com.theaterscript.app</string>
+</resources>

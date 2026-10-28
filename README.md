@@ -41,10 +41,10 @@ To watch the console logs got to [chrome://inspect/#devices](chrome://inspect/#d
 
 This project is built with:
 
-- Vite
+- SvelteKit (static SPA via `adapter-static`)
+- Svelte 5 (runes)
 - TypeScript
-- React
-- shadcn-ui
+- shadcn-svelte / bits-ui
 - Tailwind CSS
 
 
