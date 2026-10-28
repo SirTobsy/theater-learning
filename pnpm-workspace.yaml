@@ -4,6 +4,10 @@ allowBuilds:
   protobufjs: true
   sharp: false
 
+# kokoro-js pins transformers ^3.5.1; force it onto the app's 4.x (newer onnxruntime-web)
+overrides:
+  '@huggingface/transformers': ^4.2.0
+
 minimumReleaseAge: 4320
 trustPolicy: no-downgrade
 blockExoticSubdeps: true
