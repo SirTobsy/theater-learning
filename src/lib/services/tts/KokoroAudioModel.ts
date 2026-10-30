@@ -10,11 +10,11 @@ export class KokoroAudioModel implements TtsAudioModel {
             return;
         }
 
+        const dtype = "q4"; // Options: "fp32", "q8", "q4"
         try {
             // 25.10.2025 WebGPU Testes in Brave Browser
             // q4, q8, fp32 works
             // fp16, q4f16 does not work (NaN Audio)
-            const dtype = "fp16"; // Options: "fp32", "fp16", "q8", "q4", "q4f16"
             this.synthesizer = await KokoroTTS.from_pretrained(
                 "onnx-community/Kokoro-82M-ONNX", {
                     dtype,
@@ -22,29 +22,18 @@ export class KokoroAudioModel implements TtsAudioModel {
                 });
             console.log(`loaded model onnx-community/Kokoro-82M-ONNX with dtype: ${dtype}, device: webgpu`)
         } catch (error) {
-            // TODO on app this just fails and does not correctly set up a wasm model as fallback
             // WASM
             // fp32, fp16, q8, q4 works
             // q4f16 produces NaN Audio
             console.log("running model with 'webgpu' not possible. Fallback to 'wasm'")
             this.synthesizer = await KokoroTTS.from_pretrained(
                 "onnx-community/Kokoro-82M-ONNX", {
-                    dtype: "q4",
+                    dtype: dtype,
                     device: "wasm",
                 });
-            console.log("loaded model onnx-community/Kokoro-82M-ONNX with dtype: q4, device: wasm")
+            console.log(`loaded model onnx-community/Kokoro-82M-ONNX with dtype: ${dtype}, device: wasm`)
         }
 
-    }
-
-    private audioStats(audio: Float32Array) {
-        let nan = 0;
-        let peak = 0;
-        for (const sample of audio) {
-            if (Number.isNaN(sample)) nan++;
-            else peak = Math.max(peak, Math.abs(sample));
-        }
-        return { samples: audio.length, nan, peak };
     }
 
     async generate(text: string): Promise<{ audio: Float32Array; sampling_rate: number }> {
@@ -69,15 +58,6 @@ export class KokoroAudioModel implements TtsAudioModel {
 
             const result = await Promise.race([synthesisPromise, timeoutPromise]);
             const audio = result.data; // RawAudio.audio may be chunked in transformers 4.x
-            const stats = this.audioStats(audio);
-            console.debug(`Generated audio in ${(performance.now() - startTime).toFixed(0)}ms`, stats);
-
-            // q8 output overshoots +-1, which Web Audio hard-clips; scale it back into range
-            if (stats.peak > 1) {
-                for (let i = 0; i < audio.length; i++) {
-                    audio[i] /= stats.peak;
-                }
-            }
             return { audio, sampling_rate: result.sampling_rate };
         } catch (error) {
             console.error(`Error during speech synthesis after ${(performance.now() - startTime).toFixed(0)}ms:`, error);
