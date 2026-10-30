@@ -10,29 +10,30 @@ export class KokoroAudioModel implements TtsAudioModel {
             return;
         }
 
+        const dtype = "q4"; // Options: "fp32", "q8", "q4"
         try {
             // 25.10.2025 WebGPU Testes in Brave Browser
-            // fp32 works
+            // q4, q8, fp32 works
             // fp16, q4f16 does not work (NaN Audio)
-            // q8, q4 produces corrupt audio
             this.synthesizer = await KokoroTTS.from_pretrained(
                 "onnx-community/Kokoro-82M-ONNX", {
-                    dtype: "fp32", // Options: "fp32", "fp16", "q8", "q4", "q4f16"
+                    dtype,
                     device: "webgpu",
                 });
+            console.log(`loaded model onnx-community/Kokoro-82M-ONNX with dtype: ${dtype}, device: webgpu`)
         } catch (error) {
-            // TODO on app this just fails and does not correctly set up a wasm model as fallback
             // WASM
             // fp32, fp16, q8, q4 works
             // q4f16 produces NaN Audio
             console.log("running model with 'webgpu' not possible. Fallback to 'wasm'")
             this.synthesizer = await KokoroTTS.from_pretrained(
                 "onnx-community/Kokoro-82M-ONNX", {
-                    dtype: "q4",
+                    dtype: dtype,
                     device: "wasm",
                 });
+            console.log(`loaded model onnx-community/Kokoro-82M-ONNX with dtype: ${dtype}, device: wasm`)
         }
-        console.log("loaded model")
+
     }
 
     async generate(text: string): Promise<{ audio: Float32Array; sampling_rate: number }> {
@@ -40,22 +41,29 @@ export class KokoroAudioModel implements TtsAudioModel {
             throw new Error('Synthesizer not loaded. Call load() first.');
         }
 
+        const startTime = performance.now();
+        let timeout: ReturnType<typeof setTimeout>;
+
         try {
             console.debug('Generating audio for:', text);
 
             // Add timeout protection
             const timeoutPromise = new Promise<never>((_, reject) => {
-                setTimeout(() => reject(new Error('Speech synthesis timeout')), 10000);
+                timeout = setTimeout(() => reject(new Error('Speech synthesis timeout')), 60000);
             });
 
             const synthesisPromise = this.synthesizer.generate(text, {
                 voice: "af_bella",
             });
 
-            return await Promise.race([synthesisPromise, timeoutPromise]);
+            const result = await Promise.race([synthesisPromise, timeoutPromise]);
+            const audio = result.data; // RawAudio.audio may be chunked in transformers 4.x
+            return { audio, sampling_rate: result.sampling_rate };
         } catch (error) {
-            console.error('Error during speech synthesis:', error);
+            console.error(`Error during speech synthesis after ${(performance.now() - startTime).toFixed(0)}ms:`, error);
             throw error;
+        } finally {
+            clearTimeout(timeout!);
         }
     }
 }
