@@ -9,6 +9,7 @@
 	import PlayIcon from '@lucide/svelte/icons/play';
 	import { ttsService, type Character, type ScriptLine } from '#lib/services/tts/TtsService.js';
 	import { toast } from 'svelte-sonner';
+	import { DEFAULT_TTS_MODEL_ID } from '#lib/services/tts/models.js';
 
 	let {
 		characters,
@@ -76,6 +77,7 @@
 			const sampleText = `Hello, I am ${character.name}. This is how I sound with this voice setting.`;
 
 			await ttsService.speak(sampleText, {
+				model: DEFAULT_TTS_MODEL_ID,
 				readOwnLines: true,
 				beepOnOwnLines: false,
 				pauseDuration: 1.0,

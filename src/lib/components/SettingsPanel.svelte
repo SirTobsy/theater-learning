@@ -159,6 +159,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <Select
                     type="single"
+                    items={TTS_MODELS.map((model) => ({ value: model.id, label: model.name }))}
                     value={settings.model}
                     onValueChange={(modelId) => {
                         if (isTtsModelId(modelId)) updateSetting('model', modelId);
