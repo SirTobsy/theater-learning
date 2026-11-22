@@ -5,14 +5,15 @@
 	import CharacterConfig from '#lib/components/CharacterConfig.svelte';
 	import { sampleScript, sampleCharacters } from '#lib/data/sampleScript.js';
 	import type { Character, ScriptLine, TTSSettings } from '#lib/services/tts/TtsService.js';
+    import {DEFAULT_TTS_MODEL_ID} from "#lib/services/tts/models.ts";
 
 	let currentView = $state<ViewType>('script');
 	let script = $state<ScriptLine[]>(sampleScript);
 	let characters = $state<Character[]>(sampleCharacters);
 	let settings = $state<TTSSettings>({
+        model: DEFAULT_TTS_MODEL_ID,
 		readOwnLines: false,
 		beepOnOwnLines: true,
-		playbackSpeed: 1.0,
 		pauseDuration: 2.0,
 		volume: 0.8
 	});

@@ -1,8 +1,9 @@
 import * as Comlink from 'comlink';
 import type { TtsWorkerApi } from './TtsWorker';
+import type {TtsModelId} from "#lib/services/tts/models.ts";
 
 export class TtsWorkerMessenger {
-    private worker: Worker;
+    private readonly worker: Worker;
     private api: Comlink.Remote<TtsWorkerApi>;
 
     constructor() {
@@ -29,10 +30,10 @@ export class TtsWorkerMessenger {
         }
     }
 
-    async load(): Promise<boolean> {
+    async load(id: TtsModelId): Promise<boolean> {
         const startTime = performance.now();
 
-        await this.withTimeout(this.api.load(), 90 * 1000, 'TTS loading timeout');
+        await this.withTimeout(this.api.load(id), 90 * 1000, 'TTS loading timeout');
 
         const duration = performance.now() - startTime;
         console.log(`TTS loading took ${duration.toFixed(2)}ms`);

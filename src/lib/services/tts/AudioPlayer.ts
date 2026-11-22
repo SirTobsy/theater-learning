@@ -1,10 +1,17 @@
 export class AudioPlayer {
     private audioContext: AudioContext;
     private currentSource: AudioBufferSourceNode | null = null;
+    private gainNode: GainNode;
 
     constructor() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        this.gainNode = this.audioContext.createGain();
+        this.gainNode.connect(this.audioContext.destination);
+    }
+
+    setVolume(volume: number): void {
+        this.gainNode.gain.value = volume;
     }
 
     async playAudio(audioData: Float32Array, samplingRate: number): Promise<void> {
@@ -28,7 +35,7 @@ export class AudioPlayer {
                 this.currentSource = source;
 
                 // 5. Connect the source to the destination (speakers) and play
-                source.connect(this.audioContext.destination);
+                source.connect(this.gainNode);
 
                 // 6. Resolve the promise when the audio is finished playing
                 source.onended = () => {

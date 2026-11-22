@@ -1,4 +1,6 @@
 import '@testing-library/jest-dom/vitest';
+import { cleanup } from '@testing-library/svelte';
+import { afterEach } from 'vitest';
 
 // jsdom doesn't implement Worker or the Web Audio API. TtsService.ts eagerly
 // constructs a TtsWorkerMessenger + AudioPlayer at module load time, so these
@@ -42,3 +44,20 @@ if (typeof globalThis.AudioContext === 'undefined') {
 	// @ts-expect-error test-only stub
 	globalThis.AudioContext = AudioContextStub;
 }
+
+// Component tests don't use vitest globals, so Testing Library can't register its
+// own automatic cleanup. Unmount rendered components between tests.
+afterEach(() => cleanup());
+
+// bits-ui (Slider, Select) relies on browser APIs jsdom doesn't implement.
+if (typeof globalThis.ResizeObserver === 'undefined') {
+	globalThis.ResizeObserver = class ResizeObserverStub {
+		observe() {}
+		unobserve() {}
+		disconnect() {}
+	};
+}
+Element.prototype.scrollIntoView ??= () => {};
+Element.prototype.hasPointerCapture ??= () => false;
+Element.prototype.setPointerCapture ??= () => {};
+Element.prototype.releasePointerCapture ??= () => {};

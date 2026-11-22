@@ -22,14 +22,22 @@
 		initializeTTS();
 	});
 
+	let initRun = 0;
+
 	async function initializeTTS() {
+		// A model change re-runs this: block playback until the new model is loaded, and
+		// ignore the result of any older run that finishes after a newer one started.
+		const run = ++initRun;
+		isInitialized = false;
 		try {
-			await ttsService.initialize();
+			await ttsService.initialize(settings);
+			if (run !== initRun) return;
 			isInitialized = true;
 			toast.success('TTS Ready', {
 				description: 'Text-to-speech service initialized successfully'
 			});
 		} catch (error) {
+			if (run !== initRun) return;
 			toast.error('TTS Error', {
 				description: 'Failed to initialize text-to-speech'
 			});
