@@ -1,24 +1,13 @@
 {
-  "model": "sonnet",
-  "advisorModel": "opus",
-  "effortLevel": "high",
-  "outputStyle": "explanatory",
   "attribution": {
     "commit": "",
     "pr": ""
   },
-  "autoCompactEnabled": true,
-  "cleanupPeriodDays": 10,
-  "defaultShell": "bash",
-  "feedbackSurveyRate": 0,
   "permissions": {
     "allow": [
       "Bash(git pull *)",
       "Bash(git status *)",
       "Read(*)"
-    ],
-    "ask": [
-      "Bash(pnpm install *)"
     ],
     "deny": [
       "Bash(git commit *)",
@@ -26,7 +15,58 @@
       "Bash(git checkout *)",
       "Bash(git branch *)",
       "Bash(git merge *)",
-      "Read(./.env)"
+      "Read(./.env)",
+      "Read(./.env.local)"
+    ],
+    "ask": [
+      "Bash(pnpm install *)"
     ]
+  },
+
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm lint >&2 || exit 2",
+            "timeout": 30,
+            "statusMessage": "Running pnpm lint..."
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm check 2>&1 || tail -40 >&2",
+            "timeout": 30,
+            "statusMessage": "Running Svelte check..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/skill-forced-eval.sh"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "sonnet",
+  "defaultShell": "bash",
+  "outputStyle": "explanatory",
+  "feedbackSurveyRate": 0,
+  "effortLevel": "high",
+  "advisorModel": "opus",
+  "autoCompactEnabled": true,
+  "enabledPlugins": {
+    "svelte-skills@svelte-skills-kit": true
   }
 }
