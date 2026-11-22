@@ -1,6 +1,6 @@
 import { TtsWorkerMessenger } from './TtsWorkerMessenger';
 import { AudioPlayer } from './AudioPlayer';
-import {DEFAULT_TTS_MODEL_ID, type TtsModelId} from "#lib/services/tts/models.ts";
+import type {TtsModelId} from "#lib/services/tts/models.ts";
 
 export interface Model {
     id: string;
@@ -32,13 +32,12 @@ export interface ScriptLine {
 }
 
 export class TtsService {
-    private loadedModel: TtsModelId;
+    private loadedModel: TtsModelId | null = null;
     private ttsWorkerMessenger: TtsWorkerMessenger;
     private audioPlayer: AudioPlayer;
     private playToken = 0;
 
-    constructor(ttsWorker: TtsWorkerMessenger, audioPlayer: AudioPlayer, model: TtsModelId) {
-        this.loadedModel = model;
+    constructor(ttsWorker: TtsWorkerMessenger, audioPlayer: AudioPlayer) {
         this.ttsWorkerMessenger = ttsWorker;
         this.audioPlayer = audioPlayer;
     }
@@ -116,6 +115,7 @@ export class TtsService {
     }
 
     async readLine(line: ScriptLine, settings: TTSSettings, token?: number): Promise<void> {
+        this.audioPlayer.setVolume(settings.volume);
         // Read line
         const out = await this.ttsWorkerMessenger.generate(line.text);
         await this.audioPlayer.playAudio(out.audio, out.sampling_rate);
@@ -125,4 +125,4 @@ export class TtsService {
     }
 }
 
-export const ttsService = new TtsService(new TtsWorkerMessenger(), new AudioPlayer(), DEFAULT_TTS_MODEL_ID);
+export const ttsService = new TtsService(new TtsWorkerMessenger(), new AudioPlayer());
