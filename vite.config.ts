@@ -17,7 +17,11 @@ export default defineConfig({
 				pages: 'dist',
 				assets: 'dist',
 				fallback: 'index.html'
-			})
+			}),
+			paths: {
+				// Set by the GitHub Pages workflow (e.g. "/theater-learning"); empty for dev and local builds.
+				base: (process.env.BASE_PATH ?? '') as '' | `/${string}`
+			}
 		})
 	],
 	worker: {
