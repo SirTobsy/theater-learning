@@ -1,16 +1,22 @@
 import * as Comlink from 'comlink';
-import { KokoroAudioModel } from './KokoroAudioModel';
 import type { TtsAudioModel } from './ttsAudioModel';
+import type {TtsModelId} from "#lib/services/tts/models.ts";
+
+const factories = {
+    'kokoro': async () => new (await import('./KokoroAudioModel')).KokoroAudioModel(),
+    'speech-t5': async () => new (await import('./XenovaAudioModel')).XenovaAudioModel(),
+} satisfies Record<TtsModelId, () => Promise<TtsAudioModel>>;
 
 class TtsWorkerApi {
-    private ttsModel: TtsAudioModel = new KokoroAudioModel();
+    private model?: TtsAudioModel;
 
-    async load(): Promise<void> {
-        await this.ttsModel.load();
+    async load(id: TtsModelId): Promise<void> {
+        this.model = await factories[id]();
+        await this.model.load()
     }
 
     async generate(text: string): Promise<{ audio: Float32Array; sampling_rate: number }> {
-        return this.ttsModel.generate(text);
+        return this.model!.generate(text);
     }
 }
 

@@ -24,7 +24,7 @@
 
 	async function initializeTTS() {
 		try {
-			await ttsService.initialize();
+			await ttsService.initialize(settings);
 			isInitialized = true;
 			toast.success('TTS Ready', {
 				description: 'Text-to-speech service initialized successfully'

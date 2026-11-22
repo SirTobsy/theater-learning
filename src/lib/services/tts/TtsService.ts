@@ -1,7 +1,14 @@
 import { TtsWorkerMessenger } from './TtsWorkerMessenger';
 import { AudioPlayer } from './AudioPlayer';
+import type {TtsModelId} from "#lib/services/tts/models.ts";
+
+export interface Model {
+    id: string;
+    name: string;
+}
 
 export interface TTSSettings {
+    model: TtsModelId;
     readOwnLines: boolean;
     beepOnOwnLines: boolean;
     playbackSpeed: number;
@@ -35,15 +42,15 @@ export class TtsService {
         this.audioPlayer = audioPlayer;
     }
 
-    async initialize(): Promise<void> {
+    async initialize(ttsSettings: TTSSettings): Promise<void> {
         if (this.isInitialized) return;
 
         try {
             console.log('load model')
-            this.isInitialized = await this.ttsWorkerMessenger.load();
+            this.isInitialized = await this.ttsWorkerMessenger.load(ttsSettings.model);
         } catch (error) {
             console.error('Failed to initialize TTS Service:', error);
-            throw new Error('TTS initialization failed');
+            throw new Error('TTS initialization failed', { cause: error });
         }
     }
 
