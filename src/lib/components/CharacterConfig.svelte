@@ -78,7 +78,6 @@
 			await ttsService.speak(sampleText, {
 				readOwnLines: true,
 				beepOnOwnLines: false,
-				playbackSpeed: 1.0,
 				pauseDuration: 1.0,
 				volume: 0.8
 			});

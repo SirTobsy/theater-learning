@@ -14,7 +14,6 @@
         model: DEFAULT_TTS_MODEL_ID,
 		readOwnLines: false,
 		beepOnOwnLines: true,
-		playbackSpeed: 1.0,
 		pauseDuration: 2.0,
 		volume: 0.8
 	});

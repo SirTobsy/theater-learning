@@ -22,7 +22,6 @@ function createAudioPlayer(): AudioPlayer {
 const settings: TTSSettings = {
 	readOwnLines: false,
 	beepOnOwnLines: true,
-	playbackSpeed: 1,
 	pauseDuration: 0,
 	volume: 1
 };

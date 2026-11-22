@@ -61,25 +61,6 @@
 			<div class="space-y-6">
 				<div class="space-y-3">
 					<Label class="text-base font-medium">
-						Playback Speed: {settings.playbackSpeed.toFixed(1)}x
-					</Label>
-					<Slider
-						value={settings.playbackSpeed}
-						onValueChange={(value: number) => updateSetting('playbackSpeed', value)}
-						min={0.5}
-						max={2.0}
-						step={0.1}
-						class="w-full"
-					/>
-					<div class="flex justify-between text-xs text-muted-foreground">
-						<span>0.5x (Slow)</span>
-						<span>1.0x (Normal)</span>
-						<span>2.0x (Fast)</span>
-					</div>
-				</div>
-
-				<div class="space-y-3">
-					<Label class="text-base font-medium">
 						Pause Duration: {settings.pauseDuration.toFixed(1)}s
 					</Label>
 					<Slider
@@ -129,7 +110,6 @@
 							    model: settings.model,
 								readOwnLines: false,
 								beepOnOwnLines: true,
-								playbackSpeed: 1.0,
 								pauseDuration: 2.0,
 								volume: 0.8
 							})}
@@ -146,7 +126,6 @@
                                 model: settings.model,
 								readOwnLines: true,
 								beepOnOwnLines: false,
-								playbackSpeed: 1.0,
 								pauseDuration: 1.5,
 								volume: 0.8
 							})}
@@ -163,14 +142,13 @@
 							    model: settings.model,
 								readOwnLines: true,
 								beepOnOwnLines: true,
-								playbackSpeed: 0.8,
 								pauseDuration: 3.0,
 								volume: 0.7
 							})}
 						class="p-3 border border-border rounded-lg hover:bg-accent/10 transition-colors"
 					>
 						<div class="font-medium text-sm">Learning Mode</div>
-						<div class="text-xs text-muted-foreground">Slow & clear</div>
+						<div class="text-xs text-muted-foreground">Longer pauses</div>
 					</button>
 				</div>
 			</div>

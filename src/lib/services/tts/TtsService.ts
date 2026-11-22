@@ -11,7 +11,6 @@ export interface TTSSettings {
     model: TtsModelId;
     readOwnLines: boolean;
     beepOnOwnLines: boolean;
-    playbackSpeed: number;
     pauseDuration: number;
     volume: number;
 }
