@@ -1,6 +1,6 @@
 import { TtsWorkerMessenger } from './TtsWorkerMessenger';
 import { AudioPlayer } from './AudioPlayer';
-import type {TtsModelId} from "#lib/services/tts/models.ts";
+import {DEFAULT_TTS_MODEL_ID, type TtsModelId} from "#lib/services/tts/models.ts";
 
 export interface Model {
     id: string;
@@ -32,22 +32,26 @@ export interface ScriptLine {
 }
 
 export class TtsService {
-    private isInitialized = false;
+    private loadedModel: TtsModelId;
     private ttsWorkerMessenger: TtsWorkerMessenger;
     private audioPlayer: AudioPlayer;
     private playToken = 0;
 
-    constructor(ttsWorker: TtsWorkerMessenger, audioPlayer: AudioPlayer) {
+    constructor(ttsWorker: TtsWorkerMessenger, audioPlayer: AudioPlayer, model: TtsModelId) {
+        this.loadedModel = model;
         this.ttsWorkerMessenger = ttsWorker;
         this.audioPlayer = audioPlayer;
     }
 
     async initialize(ttsSettings: TTSSettings): Promise<void> {
-        if (this.isInitialized) return;
+        if (this.loadedModel == ttsSettings.model) return;
 
         try {
             console.log('load model')
-            this.isInitialized = await this.ttsWorkerMessenger.load(ttsSettings.model);
+            if (await this.ttsWorkerMessenger.load(ttsSettings.model)) {
+                this.loadedModel = ttsSettings.model;
+            }
+            // else?
         } catch (error) {
             console.error('Failed to initialize TTS Service:', error);
             throw new Error('TTS initialization failed', { cause: error });
@@ -121,4 +125,4 @@ export class TtsService {
     }
 }
 
-export const ttsService = new TtsService(new TtsWorkerMessenger(), new AudioPlayer());
+export const ttsService = new TtsService(new TtsWorkerMessenger(), new AudioPlayer(), DEFAULT_TTS_MODEL_ID);
